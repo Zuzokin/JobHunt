@@ -1,0 +1,44 @@
+version: '3'
+ 
+services:
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    ports:
+      - 443:443
+      # админка pgAdmin доступна по http://localhost
+      - 80:80
+    networks:
+      - internal
+    volumes:
+      - pgadmin-vol:/var/lib/pgadmin
+    user: root
+    environment:
+        # для логина в админку pgAdmin
+      - PGADMIN_DEFAULT_EMAIL=dev@mail.com
+      - PGADMIN_DEFAULT_PASSWORD=pass
+ 
+ 
+  postgres:
+    image: postgres:latest
+    # задать адрес сервера базы (в pgAdmin поле Host name/Address):
+    hostname: postgresdb
+    ports:
+      - 5432:5432
+    networks:
+      - internal
+    volumes:
+     - pg-vol:/var/lib/postgresql/data
+    user: root
+    environment:
+        # пароль для базы данных (имя пользователя по-умолчанию postgres)
+      - POSTGRES_PASSWORD=pass
+ 
+networks:
+  internal:
+    driver: bridge
+ 
+volumes:
+  pg-vol:
+    external: true
+  pgadmin-vol:
+    external: true
